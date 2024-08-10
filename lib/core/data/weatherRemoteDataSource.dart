@@ -30,6 +30,8 @@ class HomeRepository extends WeatherRemoteDataSource {
       final res =
           await dio.get(WeatherApi.fetchWeatherData(lat: lat, lon: lon));
       return WeatherModel.fromJson(res.data as Map<String, dynamic>);
+    } on Exception catch (e) {
+      throw Exception("Something went wrong");
     } catch (e) {
       rethrow;
     }

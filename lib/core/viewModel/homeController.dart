@@ -86,7 +86,7 @@ class HomeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveUnsaveCity(CityModel city) async {
+  void saveUnsaveCity(CityModel city, {bool isDeviceLoc = false}) async {
     int index =
         _savedCityList.indexWhere((element) => element.city == city.city);
     if (canSaveCity(city)) {
@@ -95,8 +95,11 @@ class HomeController extends ChangeNotifier {
     } else if (constantLocations.contains(city.city?.toLowerCase())) {
       showText(message: "Oops!!!, You can't Unsave ${city.city}");
       return;
+    } else if (isDeviceLoc) {
+      // This wedges situations where the device location is being added and removed (from the code in the else block)
+      return;
     } else {
-      showSuccess(message: "Removed ${city.city} to your favorite List");
+      showText(message: "Removed ${city.city} to your favorite List");
       _savedCityList.removeAt(index);
     }
 
@@ -127,7 +130,7 @@ class HomeController extends ChangeNotifier {
       population: place.administrativeArea,
       populationProper: place.administrativeArea,
     );
-    saveUnsaveCity(deviceCity);
+    saveUnsaveCity(deviceCity, isDeviceLoc: true);
     notifyListeners();
     return;
   }
